@@ -1,4 +1,4 @@
-require 'cgi'
+require 'uri'
 
 module GeoNamesAPI
   class Base < Entity
@@ -19,9 +19,9 @@ module GeoNamesAPI
 
     def self.where(params={})
       retries_remaining = GeoNamesAPI.retries
-      url = url(params)
+      uri = uri(params)
       begin
-        response = make_request(url)
+        response = make_request(uri)
         unless response.empty?
           parse_response(response, params)
         end
@@ -38,13 +38,11 @@ module GeoNamesAPI
       end
     end
 
-    def self.make_request(url)
-      JSON.load(open(url).read)
+    def self.make_request(uri)
+      JSON.load(open(uri, "User-Agent" => "#{GeoNamesAPI.name}/#{GeoNamesAPI::VERSION}").read)
     end
 
     private_class_method :make_request
-
-    KEYS = %w(streetSegment geonames)
 
     def self.parse_response(response, request_params)
       GeoNamesAPI.logger.info "GEONAMES RESPONSE (#{Time.now}): #{response}" if GeoNamesAPI.logger
@@ -56,13 +54,15 @@ module GeoNamesAPI
 
     private_class_method :parse_response
 
-    def self.url(params={})
-      endpoint = GeoNamesAPI.url + self::METHOD + params_to_url(GeoNamesAPI.params.merge(params))
+    def self.uri(params={})
+      endpoint = URI(GeoNamesAPI.url)
+      endpoint.path = "/%s" % self::METHOD # URI.path requires a leading /
+      endpoint.query = URI.encode_www_form(GeoNamesAPI.params.merge(params))
       GeoNamesAPI.logger.info "GEONAMES REQUEST (#{Time.now}): #{endpoint}" if GeoNamesAPI.logger
       endpoint
     end
 
-    private_class_method :url
+    private_class_method :uri
 
     def self.name_params(names)
       return names.first if names.first.is_a? Hash
@@ -75,19 +75,5 @@ module GeoNamesAPI
 
     private_class_method :name_params
 
-    def self.params_to_url(params={})
-      esc_params = params.map do |key, value|
-        "#{esc(key)}=#{esc(value)}"
-      end
-      "?#{esc_params.join('&')}"
-    end
-
-    private_class_method :params_to_url
-
-    def self.esc(str)
-      CGI::escape(str.to_s)
-    end
-
-    private_class_method :esc
   end
 end

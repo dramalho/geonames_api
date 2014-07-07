@@ -2,21 +2,21 @@ require 'spec_helper'
 
 describe GeoNamesAPI::Street do
   describe "::find" do
-    it "should find one Street" do
+    it "expect to find one Street" do
       result = GeoNamesAPI::Street.find(37.451, -122.18)
-      result.should be_present
+      expect(result).to be_present
     end
 
-    it "should not find streets outside of the US" do
+    it "expect to not find streets outside of the US" do
       result = GeoNamesAPI::Street.find(50.01, 10.2)
-      result.should == nil
+      expect(result).to be_nil
     end
   end
 
   describe "::all" do
-    it "should find multiple Streets in 100km radius" do
+    it "expect to find multiple Streets in 100km radius" do
       result = GeoNamesAPI::Street.all(37.8, -122.4, 1, 3)
-      result.size.should == 3
+      expect(result.size).to eq(3)
     end
   end
 end

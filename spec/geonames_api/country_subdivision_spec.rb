@@ -2,26 +2,26 @@ require 'spec_helper'
 
 
 describe GeoNamesAPI::CountrySubdivision do
-  def should_be_sf(result)
-    result.should be_present
-    result.admin_code1.should == 'CA'
-    result.admin_name1.should == 'California'
-    result.country_code.should == 'US'
-    result.country_name.should == 'United States'
+  def expected_sf(result)
+    expect(result).to be_present
+    expect(result.admin_code1).to eq('CA')
+    expect(result.admin_name1).to eq('California')
+    expect(result.country_code).to eq('US')
+    expect(result.country_name).to eq('United States')
   end
 
   describe '::find' do
-    it 'should find one subdivision' do
+    it 'expect to find one subdivision' do
       result = GeoNamesAPI::CountrySubdivision.find(37.8, -122.4)
-      should_be_sf(result)
+      expected_sf(result)
     end
   end
 
   describe '::all' do
-    it 'should find multiple subdivisions' do
+    it 'expect to find multiple subdivisions' do
       result = GeoNamesAPI::CountrySubdivision.all(37.8, -122.4)
-      result.size.should > 0
-      should_be_sf(result.first)
+      expect(result.size).to be > 0
+      expected_sf(result.first)
     end
   end
 end

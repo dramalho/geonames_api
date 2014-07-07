@@ -2,16 +2,16 @@ require 'spec_helper'
 
 describe GeoNamesAPI::Place do
   describe "::find" do
-    it "should find one place" do
+    it "expect to find one place" do
       result = GeoNamesAPI::Place.find("50.01","10.2")
-      result.should be_present
+      expect(result).to be_present
     end
   end
 
   describe "::all" do
-    it "should find multiple places in 100km radius" do
+    it "expect to find multiple places in 100km radius" do
       result = GeoNamesAPI::Place.all("50.01","10.2","100")
-      result.size.should > 0
+      expect(result.size).to be > 0
     end
   end
 end

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe GeoNamesAPI::Base do
   describe "retries" do
     before :each do
-      GeoNamesAPI.stub(:max_sleep_time_between_retries).and_return(0)
+      allow(GeoNamesAPI).to receive(:max_sleep_time_between_retries).and_return(0)
       @timeout = JSON.load <<-JSON
         {
           "status": {
@@ -19,17 +19,17 @@ describe GeoNamesAPI::Base do
     end
 
     it "retries when geonames returns timeout errors" do
-      GeoNamesAPI::Hierarchy.stub(:make_request).and_return(@timeout, @response)
+      allow(GeoNamesAPI::Hierarchy).to receive(:make_request).and_return(@timeout, @response)
       hierarchy = GeoNamesAPI::Hierarchy.find(6295630)
       earth = hierarchy.first
-      earth.should be_present
-      earth.name.should == "Earth"
+      expect(earth).to be_present
+      expect(earth.name).to eq("Earth")
     end
 
     it "fails when geonames returns timeout errors too many times" do
-      GeoNamesAPI::Hierarchy.stub(:make_request).and_return(@timeout, @timeout, @response)
-      GeoNamesAPI.stub(:retries).and_return(1)
-      proc { GeoNamesAPI::Hierarchy.find(6295630) }.should raise_error GeoNamesAPI::Timeout
+      allow(GeoNamesAPI::Hierarchy).to receive(:make_request).and_return(@timeout, @timeout, @response)
+      allow(GeoNamesAPI).to receive(:retries).and_return(1)
+      expect { GeoNamesAPI::Hierarchy.find(6295630) }.to raise_error GeoNamesAPI::Timeout
     end
   end
 end

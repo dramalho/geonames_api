@@ -13,8 +13,8 @@ describe GeoNamesAPI::NearestIntersection do
       it 'returns the two street names of the nearest intersection' do
         response = described_class.find(latitude,longitude)
         
-        response.intersection["street1"].should eq('Bertrand St')
-        response.intersection["street2"].should eq('N 11th St')
+        expect(response.intersection["street1"]).to eq('Bertrand St')
+        expect(response.intersection["street2"]).to eq('N 11th St')
       end
     end
   end

@@ -2,7 +2,7 @@ module GeoNamesAPI
   class Children < ListEndpoint
 
     METHOD = "childrenJSON"
-    FIND_PARAMS = %w(geonameId)
+    FIND_PARAMS = %w(geonameId maxRows)
 
   end
 end

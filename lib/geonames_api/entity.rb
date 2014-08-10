@@ -9,9 +9,16 @@ module GeoNamesAPI
     attr_reader :request_params
 
     def initialize(response, request_params = nil)
-      @response = response
-      @request_params = request_params
+      marshal_load([response, request_params])
+    end
+
+    def marshal_load(x)
+      @response, @request_params = x
       parse_response
+    end
+
+    def marshal_dump
+      [@response, @request_params]
     end
 
     def parse_response

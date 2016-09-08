@@ -42,6 +42,7 @@ module GeoNamesAPI
 end
 
 require 'geonames_api/version' # explicit require version file because it doesn't contain any class which can be autoload
+require 'geonames_api/error' # explicit require error file because it defines several other classes that won't be autoloaded
 Dir[File.dirname(__FILE__) + '/geonames_api/*.rb'].each do |file|
   tgt = File.basename(file, File.extname(file))
   GeoNamesAPI.autoload tgt.camelize, "geonames_api/#{tgt}"
